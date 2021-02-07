@@ -32,7 +32,10 @@ namespace Points.RestApi
             services.AddDbContext<DataContext>(o => o.UseSqlServer(connectionString));
             services.AddScoped<IPointRepository, PointRepository>();
             services.AddTransient<PointService>();
-            services.AddControllers();
+            services.AddTransient<SquareService>();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Points.RestApi", Version = "v1" });

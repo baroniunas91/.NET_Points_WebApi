@@ -3,10 +3,7 @@ using Points.RestApi.Dto;
 using Points.RestApi.Interfaces;
 using Points.RestApi.Models;
 using Points.RestApi.Services;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Points.RestApi.Controllers
@@ -33,7 +30,13 @@ namespace Points.RestApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Point>> Create(PointDto point)
         {
-            return await _pointRepository.Add(point);
+            bool validLimit = _pointService.ValidateLimit(await _pointRepository.GetAll());
+            bool isDublicate = _pointService.IsDublicate(await _pointRepository.GetAll(), point);
+            if (validLimit && !isDublicate)
+            {
+                return await _pointRepository.Add(point);
+            }
+            return null;
         }
 
         [HttpDelete("{id}")]
@@ -42,15 +45,10 @@ namespace Points.RestApi.Controllers
             await _pointRepository.Delete(id);
         }
 
-        //[AcceptVerbs("GET", "POST")]
-        //public ActionResult CheckPointExist(int xcoordinate, int ycoordinate)
-        //{
-        //    if (!_pointService.CheckPointExist(xcoordinate, ycoordinate))
-        //    {
-        //        return Content("false");
-        //    }
-
-        //    return Json(true);
-        //}
+        [HttpDelete]
+        public async Task ClearAllPoints()
+        {
+            await _pointRepository.ClearAllPoints();
+        }
     }
 }

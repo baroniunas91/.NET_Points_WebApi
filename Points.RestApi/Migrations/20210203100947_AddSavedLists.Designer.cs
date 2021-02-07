@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Points.RestApi.Data;
 
 namespace Points.RestApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210203100947_AddSavedLists")]
+    partial class AddSavedLists
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,10 +28,10 @@ namespace Points.RestApi.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("PointsListTitleId")
+                    b.Property<int?>("TitleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TitleId")
+                    b.Property<int>("Title_id")
                         .HasColumnType("int");
 
                     b.Property<int>("Xcoordinate")
@@ -39,8 +41,6 @@ namespace Points.RestApi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PointsListTitleId");
 
                     b.HasIndex("TitleId");
 
@@ -82,13 +82,8 @@ namespace Points.RestApi.Migrations
 
             modelBuilder.Entity("Points.RestApi.Entities.PointsList", b =>
                 {
-                    b.HasOne("Points.RestApi.Entities.PointsListTitle", null)
-                        .WithMany("PointsLists")
-                        .HasForeignKey("PointsListTitleId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
-
                     b.HasOne("Points.RestApi.Entities.PointsListTitle", "Title")
-                        .WithMany()
+                        .WithMany("PointsLists")
                         .HasForeignKey("TitleId");
 
                     b.Navigation("Title");
